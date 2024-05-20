@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .left {
+        width: 200px;
+        height: 500px;
+        background-color: skyblue;
+      }
+
+      .item {
+        width: 50px;
+        height: 40px;
+        text-align: center;
+        cursor: grab;
+        line-height: 40px;
+        background-color: white;
+        margin-bottom: 10px;
+      }
+
+      .right {
+        height: 500px;
+        background-color: pink;
+        flex: 1;
+      }
+      .control {
+        width: 200px;
+        height: 500px;
+        background-color: yellow;
+      }
+      .flex {
+        display: flex;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="flex">
+      <div class="left">
+        <div class="item" draggable="true" data-type="input">input</div>
+        <div class="item" draggable="true" data-type="button">button</div>
+        <div class="item" draggable="true" data-type="h1">h1</div>
+        <div class="item" draggable="true" data-type="img">img</div>
+      </div>
+      <div class="right"></div>
+      <div class="control"></div>
+    </div>
+  </body>
+  <script>
+    const obj = {
+      input: {
+        cssProps: {
+          width: 100,
+          height: 100,
+        },
+        props: {
+          value: "垃圾",
+        },
+      },
+      button: {
+        text: "按钮",
+        cssProps: {
+          width: 100,
+          height: 100,
+          color: "red",
+          background: "red",
+        },
+        props: {},
+      },
+      h1: {
+        text: "h1",
+        props: {},
+      },
+      img: {
+        props: {
+          width: 100,
+          height: 100,
+          src: "https://smartpark-tp.greentownit.com/db74450101cf8617e474be4968209845.jpeg",
+        },
+      },
+    };
+
+    function createElement(
+      tagName,
+      textContent,
+      attributes = {},
+      cssProps = {}
+    ) {
+      // 创建元素
+      const element = document.createElement(tagName);
+      element.id = Math.random().toString(36).substr(2, 9);
+      // 设置文本内容
+      if (textContent) {
+        element.textContent = textContent;
+      }
+      // 设置属性
+      for (const [key, value] of Object.entries(attributes)) {
+        element.setAttribute(key, value);
+      }
+
+      // 设置样式
+      for (const [key, value] of Object.entries(cssProps)) {
+        element.style[key] = isNaN(Number(value)) ? value : value + "px";
+      }
+      return element;
+    }
+
+    // 拖拽
+    var dragItemCurrent = null;
+
+    var compArr = new Map();
+
+    $(".item").on("dragstart", (e) => {
+      const type = e.target.dataset.type;
+      if (!type) {
+        throw new Error("组件类型必传");
+      }
+      dragItemCurrent = createElement(
+        type,
+        obj[type].text,
+        obj[type].props,
+        obj[type].cssProps
+      );
+    });
+
+    $(".right").on("dragover", (e) => {
+      e.preventDefault();
+
+      // 获取拖拽对象的宽度和高度
+      var dragItemWidth = $(dragItemCurrent).outerWidth();
+      var dragItemHeight = $(dragItemCurrent).outerHeight();
+
+      // 计算偏移量，使拖拽对象的中心位于鼠标指针下方
+      var offsetX = dragItemWidth / 2;
+      var offsetY = dragItemHeight / 2;
+      const css = {
+        position: "absolute",
+        top: e.pageY - offsetY < 0 ? 0 : e.pageY - offsetY,
+        left: e.pageX - offsetX < 200 ? 200 : e.pageX - offsetX,
+        zIndex: compArr.length + 1,
+      };
+      // 设置拖拽对象的位置
+      $(dragItemCurrent).css(css).attr("draggable", "true");
+    });
+
+    $(".right").on("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      compArr.set(dragItemCurrent.id, dragItemCurrent);
+      $(".right").append(dragItemCurrent);
+      // compArr 添加点击事件
+      compArr.forEach((item) => {
+        item.onclick = function () {
+          dragItemCurrent = item;
+          renderControl(item);
+        };
+      });
+    });
+    function renderControl(item) {
+      $(".control").empty();
+      let cssProps = obj[item.tagName.toLowerCase()].cssProps || {};
+      Object.entries(cssProps).forEach((data) => {
+        $(".control").append(
+          `<div class="control-item">
+              <span>${data[0]}</span>
+              <input type="text" 
+              value="${data[1]}" />
+            `
+        );
+      });
+      $(".control").append(`<button onclick="saveControl()">保存</button>`);
+    }
+    function saveControl() {
+      const controlArr = $(".control-item");
+      const controlObj = {};
+      controlArr.each((index, item) => {
+        const key = $(item).find("span").text();
+        const value = $(item).find("input").val();
+        controlObj[key] = value;
+      });
+
+      // 更新拖拽对象的属性
+      Object.entries(controlObj).forEach((data) => {
+        $(dragItemCurrent).css(data[0], data[1]);
+      });
+    }
+  </script>
+</html>
