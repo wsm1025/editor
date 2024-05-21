@@ -1,5 +1,3 @@
-// src/editor/common/selected-mask.tsx
-
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -45,8 +43,6 @@ function SelectedMask(
     // 获取容器位置
     const { top: containerTop, left: containerLeft } =
       container.getBoundingClientRect();
-
-    console.log(top - containerTop + container.scrollTop, left - containerLeft);
 
     // 计算位置
     setPosition({

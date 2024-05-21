@@ -10,9 +10,10 @@ interface Props {
   children: any;
   // 当前组件的id
   id: string;
+  size: any;
 }
 
-const Space: React.FC<Props> = ({ children, id }) => {
+const Space: React.FC<Props> = ({ children, id, size }) => {
   const [{ canDrop }, drop] = useDrop(() => ({
     accept: [ItemType.Space, ItemType.Button],
     drop: (_, monitor) => {
@@ -34,6 +35,7 @@ const Space: React.FC<Props> = ({ children, id }) => {
   if (!children?.length) {
     return (
       <ArcoSpace
+        size={size}
         ref={drop}
         className="p-[16px]"
         id={id}
@@ -47,6 +49,7 @@ const Space: React.FC<Props> = ({ children, id }) => {
 
   return (
     <ArcoSpace
+      size={size}
       ref={drop}
       className="p-[16px]"
       id={id}

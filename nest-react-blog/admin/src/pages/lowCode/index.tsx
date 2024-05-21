@@ -7,6 +7,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import LeftComponents from './components/leftComponents';
 import ContentComponents from './components/contentComponents';
+import RightComponents from './components/rightComponents';
 const LowCode = () => {
   return (
     <Card title="低代码">
@@ -31,7 +32,7 @@ const LowCode = () => {
               maxSize={300}
               minSize={200}
             >
-              <div>3</div>
+              <RightComponents />
             </Allotment.Pane>
           </Allotment>
         </div>

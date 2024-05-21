@@ -23,17 +23,17 @@ const ContentComponents: React.FC = () => {
       canDrop: monitor.canDrop(),
     }),
   }));
-  const { components, curComponentId, sertCurComponentId } = useComponets();
+  const { components, curComponentId, setCurComponentId } = useComponets();
   useEffect(() => {
     function createMask(e: any) {
       const path = e.composedPath();
       for (let i = 0; i < path.length; i++) {
         const ele = path[i];
-        if (ele.getAttribute('data-component-id')) {
+        if (ele.getAttribute && ele.getAttribute('data-component-id')) {
           const componentId = ele.getAttribute('data-component-id');
-          sertCurComponentId(componentId);
+          setCurComponentId(componentId);
+          break;
         }
-        break;
       }
     }
     const container = document.querySelector('.stage');

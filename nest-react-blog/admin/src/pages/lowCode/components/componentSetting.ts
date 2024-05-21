@@ -28,18 +28,16 @@ const ComponentMap: { [key: string]: any } = {
 
 function renderComponents(components: Component[]): React.ReactNode {
   return components.map((component: Component) => {
-    return ComponentMap[component.name]
-      ? React.createElement(
-          ComponentMap[component.name],
-          {
-            ...component.props,
-            key: component.id,
-            id: component.id,
-            'data-component-id': component.id,
-          },
-          component.props.children || renderComponents(component.children || [])
-        )
-      : null;
+    return React.createElement(
+      ComponentMap[component.name],
+      {
+        ...component.props,
+        key: component.id,
+        id: component.id,
+        'data-component-id': component.id,
+      },
+      component.props.children || renderComponents(component.children || [])
+    );
   });
 }
 

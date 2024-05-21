@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { getComputedById } from '../utils';
+import { getComponentById } from '../utils';
 
 export interface Component {
   /**
@@ -23,6 +23,7 @@ export interface Component {
 interface State {
   components: Component[];
   curComponentId: string;
+  curComponent: Component | null;
 }
 
 interface Action {
@@ -32,17 +33,18 @@ interface Action {
    * @returns
    */
   addComponent: (component: Component, parentId: string) => void;
-  sertCurComponentId: (id: string) => void;
+  setCurComponentId: (componentId: string) => void;
+  updateComponentProps: (componentId: string, props: any) => void;
 }
 
 export const useComponets = create<State & Action>((set) => ({
   components: [],
   curComponentId: '',
+  curComponent: null,
   addComponent: (component, parentId) =>
     set((state) => {
-      console.log('addComponent', component, parentId);
       if (parentId) {
-        const parentComponent = getComputedById(parentId, state.components);
+        const parentComponent = getComponentById(parentId, state.components);
         if (parentComponent) {
           if (parentComponent?.children) {
             parentComponent?.children?.push(component);
@@ -54,7 +56,27 @@ export const useComponets = create<State & Action>((set) => ({
       }
       return { components: [...state.components, component] };
     }),
-  sertCurComponentId(componentId) {
-    set({ curComponentId: componentId });
+  setCurComponentId(componentId) {
+    set((state) => {
+      const component = getComponentById(componentId, state.components);
+      return { curComponentId: componentId, curComponent: component };
+    });
   },
+  updateComponentProps: (componentId, props) =>
+    set((state) => {
+      const component = getComponentById(componentId, state.components);
+      if (component) {
+        if (componentId === state.curComponentId) {
+          component.props = { ...component.props, ...props };
+          return {
+            curComponent: component,
+            curComponentId: componentId,
+            components: [...state.components],
+          };
+        }
+
+        return { components: [...state.components] };
+      }
+      return { components: [...state.components] };
+    }),
 }));

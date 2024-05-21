@@ -11,17 +11,20 @@ const uuId = (num = 6) => {
   return res;
 };
 
-const getComputedById = (
+const getComponentById = (
   id: string,
   components: Component[]
 ): Component | null => {
-  console.log(id, components, '嵌套组件');
-  for (const component of components) {
-    if (component.id === id) return component;
-    if (component.children?.length > 0) {
-      const childComponent = getComputedById(id, component.children);
-      if (childComponent !== null) return childComponent;
+  const findComponent = (components, id) => {
+    for (const component of components) {
+      if (component.id === id) return component;
+      if (Array.isArray(component.children) && component.children.length > 0) {
+        const childComponent = findComponent(component.children, id);
+        if (childComponent) return childComponent;
+      }
     }
-  }
+  };
+
+  return findComponent(components, id) ?? null;
 };
-export { uuId, getComputedById };
+export { uuId, getComponentById };
