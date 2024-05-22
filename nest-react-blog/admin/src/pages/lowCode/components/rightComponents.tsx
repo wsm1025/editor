@@ -1,70 +1,32 @@
-import { Form, Input, Select } from '@arco-design/web-react';
-import { useEffect } from 'react';
-import { componentSettingMap } from '../common/data';
+import { useState } from 'react';
 import { useComponets } from '../stores/components';
+import ComponentAttr from './attr';
+import ComponentEvent from './event';
+import { Radio } from '@arco-design/web-react';
 
-const Setting: React.FC = () => {
-  const { curComponentId, updateComponentProps, curComponent, components } =
-    useComponets();
+const RightComponents: React.FC = () => {
+  const { curComponentId, curComponent } = useComponets();
 
-  const [form] = Form.useForm();
+  const [key, setKey] = useState('属性');
 
-  useEffect(() => {
-    // 初始化表单
-    form.setFieldsValue(curComponent?.props);
-  }, [curComponent]);
-
-  /**
-   * 动态渲染表单元素
-   * @param setting 元素配置
-   * @returns
-   */
-  function renderFormElememt(setting: any) {
-    const { type, options } = setting;
-
-    if (type === 'select') {
-      return <Select options={options} />;
-    } else if (type === 'input') {
-      return <Input />;
-    } else if (type === 'switch') {
-      return <Select options={options} />;
-    }
-  }
-
-  // 监听表单值变化，更新组件属性
-  function valueChange(changeValues: any) {
-    if (curComponentId) {
-      updateComponentProps(curComponentId, changeValues);
-    }
-  }
   if (!curComponentId || !curComponent) return null;
 
-  // 根据组件类型渲染表单
   return (
-    <div className="pt-[20px]">
-      <Form
-        form={form}
-        onValuesChange={valueChange}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 14 }}
+    <>
+      <Radio.Group
+        className="flex justify-center mt-2"
+        type="button"
+        defaultValue="属性"
+        style={{ marginRight: 20, marginBottom: 20 }}
+        onChange={(value) => setKey(value)}
       >
-        <Form.Item key={curComponentId} label="id">
-          <Input type="text" value={curComponentId} disabled />
-        </Form.Item>
-        {(componentSettingMap[curComponent.name] || []).map((setting) => {
-          return (
-            <Form.Item
-              key={setting.name}
-              field={setting.name}
-              label={setting.label}
-            >
-              {renderFormElememt(setting)}
-            </Form.Item>
-          );
-        })}
-      </Form>
-    </div>
+        <Radio value="属性">属性</Radio>
+        <Radio value="事件">事件</Radio>
+      </Radio.Group>
+      {key === '属性' && <ComponentAttr />}
+      {key === '事件' && <ComponentEvent />}
+    </>
   );
 };
 
-export default Setting;
+export default RightComponents;

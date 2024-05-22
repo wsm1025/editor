@@ -5,38 +5,49 @@ import 'allotment/dist/style.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import Header from './components/header';
 import LeftComponents from './components/leftComponents';
 import ContentComponents from './components/contentComponents';
 import RightComponents from './components/rightComponents';
+import Prod from './components/prod';
+
+import { useComponets } from './stores/components';
 const LowCode = () => {
+  const { model } = useComponets();
   return (
     <Card title="低代码">
-      <div className={style.header}></div>
-      <DndProvider backend={HTML5Backend}>
-        <div className={style.card}>
-          <Allotment>
-            <Allotment.Pane
-              className={style.left}
-              preferredSize={200}
-              maxSize={300}
-              minSize={200}
-            >
-              <LeftComponents />
-            </Allotment.Pane>
-            <Allotment.Pane className={style.content}>
-              <ContentComponents />
-            </Allotment.Pane>
-            <Allotment.Pane
-              className={style.right}
-              preferredSize={200}
-              maxSize={300}
-              minSize={200}
-            >
-              <RightComponents />
-            </Allotment.Pane>
-          </Allotment>
-        </div>
-      </DndProvider>
+      <div className={style.header}>
+        <Header />
+      </div>
+      {model === 'edit' ? (
+        <DndProvider backend={HTML5Backend}>
+          <div className={style.card}>
+            <Allotment>
+              <Allotment.Pane
+                className={style.left}
+                preferredSize={200}
+                maxSize={300}
+                minSize={200}
+              >
+                <LeftComponents />
+              </Allotment.Pane>
+              <Allotment.Pane className={style.content}>
+                <ContentComponents />
+              </Allotment.Pane>
+              <Allotment.Pane
+                className={style.right}
+                preferredSize={300}
+                maxSize={300}
+                minSize={270}
+              >
+                <RightComponents />
+              </Allotment.Pane>
+            </Allotment>
+          </div>
+        </DndProvider>
+      ) : (
+        <Prod />
+      )}
     </Card>
   );
 };

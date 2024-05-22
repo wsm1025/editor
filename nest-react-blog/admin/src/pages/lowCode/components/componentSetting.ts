@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button } from '@arco-design/web-react';
 import Space from './space';
+import Button from './button';
 
 interface Component {
   /**

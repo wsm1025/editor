@@ -24,6 +24,7 @@ interface State {
   components: Component[];
   curComponentId: string;
   curComponent: Component | null;
+  model: 'edit' | 'preview';
 }
 
 interface Action {
@@ -35,12 +36,14 @@ interface Action {
   addComponent: (component: Component, parentId: string) => void;
   setCurComponentId: (componentId: string) => void;
   updateComponentProps: (componentId: string, props: any) => void;
+  setModel: (model: State['model']) => void;
 }
 
 export const useComponets = create<State & Action>((set) => ({
   components: [],
   curComponentId: '',
   curComponent: null,
+  model: 'edit',
   addComponent: (component, parentId) =>
     set((state) => {
       if (parentId) {
@@ -68,15 +71,18 @@ export const useComponets = create<State & Action>((set) => ({
       if (component) {
         if (componentId === state.curComponentId) {
           component.props = { ...component.props, ...props };
+          window.components = state.components;
           return {
             curComponent: component,
             curComponentId: componentId,
             components: [...state.components],
           };
         }
-
         return { components: [...state.components] };
       }
       return { components: [...state.components] };
     }),
+  setModel(model) {
+    set(() => ({ model }));
+  },
 }));

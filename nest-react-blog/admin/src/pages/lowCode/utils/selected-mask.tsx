@@ -64,7 +64,7 @@ function SelectedMask(
         pointerEvents: 'none',
         width: position.width,
         height: position.height,
-        zIndex: 1003,
+        zIndex: 1,
         borderRadius: 4,
         boxSizing: 'border-box',
       }}
