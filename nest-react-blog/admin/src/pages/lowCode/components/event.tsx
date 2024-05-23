@@ -2,6 +2,8 @@
 import { Collapse, Input, Select, TreeSelect } from '@arco-design/web-react';
 import { ItemType } from '../common/data';
 import { useComponets } from '../stores/components';
+import { useVariablesStore } from '../stores/commonData';
+
 import { useState } from 'react';
 
 const componentEventMap = {
@@ -28,6 +30,7 @@ const componentMehodsMap = {
 const ComponentEvent = () => {
   const { curComponent, curComponentId, updateComponentProps, components } =
     useComponets();
+  const { variables } = useVariablesStore();
 
   // 事件类型改变
   function typeChange(eventName: string, value: string) {
@@ -82,6 +85,24 @@ const ComponentEvent = () => {
       },
     });
   }
+  function variableChange(eventName: string, value: string) {
+    if (!curComponentId) return;
+    updateComponentProps(curComponentId, {
+      [eventName]: {
+        ...curComponent?.props?.[eventName],
+        variable: value,
+      },
+    });
+  }
+  function variableValueChange(eventName: string, value: string) {
+    if (!curComponentId) return;
+    updateComponentProps(curComponentId, {
+      [eventName]: {
+        ...curComponent?.props?.[eventName],
+        value: value,
+      },
+    });
+  }
 
   if (!curComponent) return null;
 
@@ -105,6 +126,7 @@ const ComponentEvent = () => {
                     options={[
                       { label: '显示提示', value: 'showMessage' },
                       { label: '组件方法', value: 'componentFunction' },
+                      { label: '设置变量', value: 'variable' },
                     ]}
                     onChange={(value) => {
                       typeChange(setting.name, value);
@@ -192,6 +214,43 @@ const ComponentEvent = () => {
                       }}
                     />
                   </div>
+                </div>
+              )}
+              {curComponent?.props?.[setting.name]?.type === 'variable' && (
+                <div className="flex flex-col gap-[12px] mt-[12px]">
+                  <div
+                    style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+                  >
+                    <div>变量：</div>
+                    <div>
+                      <Select
+                        style={{ width: 160 }}
+                        value={curComponent?.props?.[setting.name]?.variable}
+                        options={variables.map((e) => ({
+                          label: e.remark,
+                          value: e.name,
+                        }))}
+                        onChange={(value) => {
+                          variableChange(setting.name, value as string);
+                        }}
+                        allowClear
+                      />
+                    </div>
+                  </div>
+                  {curComponent?.props?.[setting.name]?.type === 'variable' && (
+                    <div>
+                      <div>
+                        <span>变量值：</span>
+                        <Input
+                          style={{ width: 160 }}
+                          value={curComponent?.props?.[setting.name]?.value}
+                          onChange={(e) => {
+                            variableValueChange(setting.name, e);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </Collapse.Item>

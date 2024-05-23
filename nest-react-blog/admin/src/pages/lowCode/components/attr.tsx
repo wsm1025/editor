@@ -2,10 +2,10 @@ import { Form, Input, Select } from '@arco-design/web-react';
 import { useEffect } from 'react';
 import { componentSettingMap } from '../common/data';
 import { useComponets } from '../stores/components';
+import SettingFormItemInput from './setting-form-item';
 
 const Attr: React.FC = () => {
-  const { curComponentId, updateComponentProps, curComponent, components } =
-    useComponets();
+  const { curComponentId, updateComponentProps, curComponent } = useComponets();
 
   const [form] = Form.useForm();
 
@@ -25,7 +25,7 @@ const Attr: React.FC = () => {
     if (type === 'select') {
       return <Select options={options} />;
     } else if (type === 'input') {
-      return <Input />;
+      return <SettingFormItemInput />;
     } else if (type === 'switch') {
       return <Select options={options} />;
     }

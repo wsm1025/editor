@@ -1,6 +1,7 @@
 import React from 'react';
 import Space from './space';
 import Button from './button';
+import { useVariablesStore } from '../stores/commonData';
 
 interface Component {
   /**
@@ -26,6 +27,29 @@ const ComponentMap: { [key: string]: any } = {
   Space,
 };
 
+function propsFormat(component: Component) {
+  const props = Object.keys(component.props).reduce(
+    (prev, key) => {
+      if (typeof component.props[key] === 'object') {
+        // 静态属性 直接赋值
+        if (component.props[key].type === 'static') {
+          prev[key] = component.props[key].value;
+        } else if (component.props[key].type === 'variable') {
+          //  变量 从变量池中获取
+          const variableName = component.props[key].value;
+
+          prev[key] = `\${${variableName}}`;
+        }
+      } else {
+        prev[key] = component.props[key];
+      }
+      return prev;
+    },
+    { children: {} }
+  );
+  return props.children;
+}
+
 function renderComponents(components: Component[]): React.ReactNode {
   return components.map((component: Component) => {
     return React.createElement(
@@ -36,7 +60,7 @@ function renderComponents(components: Component[]): React.ReactNode {
         id: component.id,
         'data-component-id': component.id,
       },
-      component.props.children || renderComponents(component.children || [])
+      propsFormat(component) || renderComponents(component.children || [])
     );
   });
 }
