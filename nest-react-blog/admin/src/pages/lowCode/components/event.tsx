@@ -35,7 +35,22 @@ const ComponentEvent = () => {
   // 事件类型改变
   function typeChange(eventName: string, value: string) {
     if (!curComponentId) return;
-    updateComponentProps(curComponentId, { [eventName]: { type: value } });
+    if (!value) {
+      delete curComponent?.props?.[eventName];
+    }
+    updateComponentProps(
+      curComponentId,
+      !value
+        ? {}
+        : {
+            [eventName]: {
+              type: value,
+              script: `(function(ctx){
+                  console.log(ctx)
+                })(ctx)`,
+            },
+          }
+    );
   }
 
   // 消息类型改变
@@ -103,6 +118,15 @@ const ComponentEvent = () => {
       },
     });
   }
+  function scriptChange(eventName: string, value: string) {
+    if (!curComponentId) return;
+    updateComponentProps(curComponentId, {
+      [eventName]: {
+        ...curComponent?.props?.[eventName],
+        script: value,
+      },
+    });
+  }
 
   if (!curComponent) return null;
 
@@ -127,7 +151,9 @@ const ComponentEvent = () => {
                       { label: '显示提示', value: 'showMessage' },
                       { label: '组件方法', value: 'componentFunction' },
                       { label: '设置变量', value: 'variable' },
+                      { label: '执行脚本', value: 'executeScript' },
                     ]}
+                    allowClear
                     onChange={(value) => {
                       typeChange(setting.name, value);
                     }}
@@ -251,6 +277,25 @@ const ComponentEvent = () => {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
+              {curComponent?.props?.[setting.name]?.type ===
+                'executeScript' && (
+                <div className="flex flex-col gap-[12px] mt-[12px]">
+                  <div
+                    style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+                  >
+                    <div>脚本：</div>
+                    <div>
+                      <Input.TextArea
+                        style={{ width: 160 }}
+                        value={curComponent?.props?.[setting.name]?.script}
+                        onChange={(e) => {
+                          scriptChange(setting.name, e);
+                        }}
+                      />
+                    </div>
+                  </div>
                 </div>
               )}
             </Collapse.Item>

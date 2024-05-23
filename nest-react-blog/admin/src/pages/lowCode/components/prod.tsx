@@ -34,6 +34,18 @@ const ProdStage: React.FC = () => {
     return props.children;
   }
 
+  function executeScript(script: string) {
+    const func = new Function('ctx', script);
+    function getComponentsRef(componentId: string) {
+      return componentsRefs.current[componentId];
+    }
+    const ctx = {
+      setData,
+      getComponentsRef,
+    };
+    func(ctx);
+  }
+
   function renderComponents(components: Component[]): React.ReactNode {
     return components.map((component: Component) => {
       if (!ComponentMap[component.name]) {
@@ -73,6 +85,8 @@ const ProdStage: React.FC = () => {
         if (variable && value) {
           setData(variable, value);
         }
+      } else if (Cprops.onClick?.type === 'executeScript') {
+        executeScript(Cprops.onClick.script);
       }
     };
     return props;
