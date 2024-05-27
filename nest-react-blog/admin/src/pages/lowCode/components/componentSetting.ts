@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import Space from './space';
 import Button from './button';
-import { useVariablesStore } from '../stores/commonData';
+import { ItemType } from '../common/data';
+import loadRemoteComponent from '../utils/remoteComponent';
 
 interface Component {
   /**
@@ -25,6 +26,11 @@ interface Component {
 const ComponentMap: { [key: string]: any } = {
   Button,
   Space,
+  [ItemType.RemoteComponent]: lazy(() =>
+    loadRemoteComponent(
+      'https://cdn.jsdelivr.net/npm/dbfu-remote-component@1.0.1/dist/bundle.umd.js'
+    )
+  ),
 };
 
 function propsFormat(component: Component) {

@@ -1,6 +1,7 @@
 export const ItemType = {
   Button: 'Button',
   Space: 'Space',
+  RemoteComponent: 'RemoteComponent',
 };
 export const componentSettingMap = {
   [ItemType.Button]: [
@@ -30,6 +31,13 @@ export const componentSettingMap = {
         { label: '中', value: 'medium' },
         { label: '小', value: 'small' },
       ],
+    },
+  ],
+  [ItemType.RemoteComponent]: [
+    {
+      name: 'text',
+      label: '文本',
+      type: 'input',
     },
   ],
 };

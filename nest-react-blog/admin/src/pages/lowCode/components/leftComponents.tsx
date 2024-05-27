@@ -1,3 +1,4 @@
+import React from 'react';
 import ComponentItem from '../common/component-item';
 import { ItemType } from '../common/data';
 import { useComponets } from '../stores/components';
@@ -16,7 +17,6 @@ const LeftComponents: React.FC = () => {
       dropResult.id
     );
   };
-
   return (
     <div className="flex p-[10px] gap-4 flex-wrap">
       <ComponentItem
@@ -28,6 +28,11 @@ const LeftComponents: React.FC = () => {
         onDragEnd={onDragEnd}
         description="间距"
         name={ItemType.Space}
+      />
+      <ComponentItem
+        onDragEnd={onDragEnd}
+        description="远程组件"
+        name={ItemType.RemoteComponent}
       />
     </div>
   );

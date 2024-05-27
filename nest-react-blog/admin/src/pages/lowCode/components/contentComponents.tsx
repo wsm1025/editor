@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { ItemType } from '../common/data';
 import { useComponets } from '../stores/components';
 import { renderComponents } from './componentSetting';
@@ -58,7 +58,7 @@ const ContentComponents: React.FC = () => {
       style={{ border: canDrop ? '1px solid #ccc' : 'none' }}
       className="p-[24px] h-[100%] stage"
     >
-      {renderComponents(components)}
+      <Suspense fallback="loading..">{renderComponents(components)}</Suspense>
       {curComponentId && (
         <SelectedMask
           componentId={curComponentId}
