@@ -1,9 +1,9 @@
 // src/editor/components/space/index.tsx
 import { Space as ArcoSpace } from '@arco-design/web-react';
 
-import React from 'react';
 import { useDrop } from 'react-dnd';
 import { ItemType } from '../../common/data';
+import { forwardRef } from 'react';
 
 interface Props {
   // 当前组件的子节点
@@ -13,9 +13,11 @@ interface Props {
   size: any;
 }
 
-const Space: React.FC<Props> = ({ children, id, size }) => {
+const Space = (props, ref) => {
+  const { children, id, size } = props;
+
   const [{ canDrop }, drop] = useDrop(() => ({
-    accept: [ItemType.Space, ItemType.Button],
+    accept: Object.values(ItemType),
     drop: (_, monitor) => {
       const didDrop = monitor.didDrop();
       if (didDrop) {
@@ -61,4 +63,4 @@ const Space: React.FC<Props> = ({ children, id, size }) => {
   );
 };
 
-export default Space;
+export default forwardRef(Space);

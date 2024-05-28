@@ -5,13 +5,14 @@ import { Message } from '@arco-design/web-react';
 import { useVariablesStore } from '../stores/commonData';
 import { usePageDataStore } from '../stores/page-data';
 
-const ProdStage: React.FC = () => {
+const ProdStage = () => {
   const { components } = useComponets();
   const componentsRefs = useRef<any>({});
   const { variables } = useVariablesStore();
   const { setData, data } = usePageDataStore();
 
   function propsFormat(component: Component) {
+    if (component.name === 'Space') return false;
     const props = Object.keys(component.props).reduce(
       (prev, key) => {
         if (typeof component.props[key] === 'object') {

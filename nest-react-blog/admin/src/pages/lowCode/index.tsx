@@ -19,8 +19,8 @@ const LowCode = () => {
       <div className={style.header}>
         <Header />
       </div>
-      {model === 'edit' ? (
-        <DndProvider backend={HTML5Backend}>
+      <DndProvider backend={HTML5Backend}>
+        {model === 'edit' ? (
           <div className={style.card}>
             <Allotment>
               <Allotment.Pane
@@ -44,10 +44,10 @@ const LowCode = () => {
               </Allotment.Pane>
             </Allotment>
           </div>
-        </DndProvider>
-      ) : (
-        <Prod />
-      )}
+        ) : (
+          <Prod />
+        )}
+      </DndProvider>
     </Card>
   );
 };

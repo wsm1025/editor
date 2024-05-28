@@ -34,6 +34,7 @@ const ComponentMap: { [key: string]: any } = {
 };
 
 function propsFormat(component: Component) {
+  if (component.name === 'Space') return false;
   const props = Object.keys(component.props).reduce(
     (prev, key) => {
       if (typeof component.props[key] === 'object') {
