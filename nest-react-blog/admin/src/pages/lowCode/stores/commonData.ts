@@ -31,13 +31,6 @@ interface Action {
 }
 
 export const useVariablesStore = create<State & Action>((set) => ({
-  variables: [
-    {
-      name: '变量1',
-      defaultValue: '1',
-      type: 'STRING',
-      remark: '变量1',
-    },
-  ],
+  variables: [],
   setVariables: (variables) => set({ variables }),
 }));
